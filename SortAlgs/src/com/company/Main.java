@@ -2,6 +2,8 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -10,87 +12,69 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         Random rand = new Random();
-        BubbleSort bs = new BubbleSort();
-        SelectionSort ss = new SelectionSort();
         Swap swap = new Swap();
+        BubbleSort bs = new BubbleSort();
         QuickSort qs = new QuickSort();
-        BogoSort boso = new BogoSort();
         int size = 400;
+
 
         int [] randArr = IntStream.iterate(1, n -> n + 1).limit(size).toArray();
         for(int i=0;i<=size;i++){
             randArr = swap.swap(randArr,rand.nextInt(size),rand.nextInt(size));
         }
-
-        //boso.sort(Arrays.copyOfRange(randArr,0,9));
-
         qs.create();
-        qs.sort(Arrays.copyOfRange(randArr,0,randArr.length),0,randArr.length-1);
+        qs.sort(Arrays.copyOfRange(randArr,0,randArr.length),0, randArr.length-1);
 
-        ss.sort(Arrays.copyOfRange(randArr,0,randArr.length));
+        JFrame mainFrame = new JFrame();
+        mainFrame.setSize(816,488);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JPanel jp = new JPanel();
+        jp.setSize(816,488);
+        jp.setLayout(null);
+        JButton b1 = new JButton("Bubblesort");
+        b1.setBounds(0,0,408,488);
+        JButton b2 = new JButton("Quicksort");
+        b2.setBounds(408,0,408,488);
 
-        bs.sort(Arrays.copyOfRange(randArr,0,randArr.length));
-    }
-}
+        b1.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    int [] randArr = IntStream.iterate(1, n -> n + 1).limit(size).toArray();
+                    for(int i=0;i<=size;i++){
+                        randArr = swap.swap(randArr,rand.nextInt(size),rand.nextInt(size));
+                    }
 
-class GnomeSort{
-
-    public GUI gui = new GUI();
-    Insert insert= new Insert();
-
-    public void sort(int [] in) throws InterruptedException {
-
-        for(int i=0;i<in.length;i++){
-            int [] sortedArr =Arrays.copyOfRange(in,0,i);
-            insert.insert(in,findIndex(sortedArr,i),i);
-
-            gui.draw(in);
-            Thread.sleep(1);
-        }
-    }
-
-    public int findIndex(int [] in,int toFind){
-        int out=0;
-
-        if(in.length==1){
-            if(toFind<in[0]){
-                out=1;
-            }else {
-                out = 0;
+                    bs.sort(Arrays.copyOfRange(randArr,0,randArr.length));
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
             }
-        }else{
-            for(int i=1;i<in.length-1;i++){
+        });
 
+        b2.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                try {
+                    int [] randArr = IntStream.iterate(1, n -> n + 1).limit(size).toArray();
+                    for(int i=0;i<=size;i++){
+                        randArr = swap.swap(randArr,rand.nextInt(size),rand.nextInt(size));
+                    }
+
+                    qs.create();
+                    qs.sort(Arrays.copyOfRange(randArr,0,randArr.length),0, randArr.length-1);
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                }
             }
-        }
+        });
 
-        return out;
-    }
-}
-
-class BogoSort{
-
-    public GUI gui = new GUI();
-    public Swap swap = new Swap();
-    public Random rnd = new Random();
-
-    public void sort (int [] in) throws InterruptedException {
-        gui.create("Bogo-Sort");
-        while(!sorted(in)) {
-            for (int i = 0; i < in.length - 1; i++) {
-                in = swap.swap(in, rnd.nextInt(in.length), rnd.nextInt(in.length));
-            }
-            gui.draw(in);
-        }
-    }
-
-    public Boolean sorted(int [] in){
-        for(int i=0;i<in.length-1;i++){
-            if(!(in[i+1]>in[i])){
-                return false;
-            }
-        }
-        return true;
+        jp.add(b1);
+        jp.add(b2);
+        mainFrame.add(jp);
+        mainFrame.setVisible(true);
     }
 }
 
@@ -110,29 +94,6 @@ class BubbleSort{
                 gui.draw(in);
                 Thread.sleep(1);
             }
-        }
-    }
-}
-
-class SelectionSort{
-
-    public GUI gui = new GUI();
-    public Swap swap = new Swap();
-
-    public void sort(int [] in) throws InterruptedException {
-        gui.create("Selection-Sort(Max-Sort)");
-        for(int i=0;i<in.length;i++){
-            int maxIndex = 0;
-            for(int j=0;j<in.length-i;j++){
-                //vergleiche Objekt in Array mit aktuell größtem gespeichertem Objekt -> wenn größer setze maxIndex auf aktuellen Index
-                if(in[j]>in[maxIndex]){
-                    maxIndex=j;
-                }
-                gui.draw(in);
-                Thread.sleep(1);
-            }
-            //tausche Größtes Objekt mit dem Letzen nicht sortierten Objekt
-            in = swap.swap(in,in.length-1-i,maxIndex);
         }
     }
 }
@@ -158,19 +119,15 @@ class QuickSort{
                 pivotIndex++;
             }
             gui.draw(in);
-            Thread.sleep(1);
+            Thread.sleep(0,5);
         }
         in=swap.swap(in,pivotIndex,end);
+        gui.draw(in);
+        Thread.sleep(0,5);
 
         sort(in,start,pivotIndex-1);
         sort(in,pivotIndex+1,end);
         return in;
-    }
-}
-
-class Insert{
-    public int [] insert(int [] in,int index1,int idex2){
-
     }
 }
 
@@ -191,11 +148,11 @@ class GUI{
 
     public void create(String name){
         jf.setSize(816,488);
-        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jf.setTitle(name);
-        jf.setVisible(true);
         c = new Canvas(450,new int [] {});
         jf.add(c);
+        jf.setVisible(true);
     }
 
     public void draw(int [] randArr){
